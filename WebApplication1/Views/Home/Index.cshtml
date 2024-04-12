@@ -1,0 +1,134 @@
+﻿@* @{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+
+@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+    .pagination-link{
+        margin:2px;
+        cursor:pointer;
+    }
+
+    .pagination-link.active {
+        font-weight: bold;
+    }
+</style>
+
+<div>
+    <h2>Enter URL:</h2>
+    <form id="urlForm">
+        <input type="text" id="urlInput" />
+        <button type="submit">Fetch Images</button>
+    </form>
+</div>
+<div class="row">
+   <div>Total number of images: </div> <div id="totalnoofimages"></div>
+</div>
+<div class="row" style="border:1px;">
+    
+    <div id="imageGallery">
+        <!-- Images will be displayed here -->
+    </div>
+
+    <div id="pagination">
+        <!-- Pagination links will be displayed here -->
+    </div>
+</div>
+
+<div id="words">
+    <div class="row"> <div style="float:left; font-weight:bold;">Total number of Words:</div> <div id="TotalWordCount"></div></div>
+    <div class="row">
+        <div style="float:left; font-weight:bold;">Top Words:</div>
+        <div>
+            <table id="wordTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Word</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#urlForm').submit(function (event) {
+            event.preventDefault();
+            var url = $('#urlInput').val();
+            fetchImages(url, 1);
+        });
+
+        $('#pagination').on('click', '.pagination-link', function () {
+            var page = $(this).data('page');
+            var url = $('#urlInput').val();
+            fetchImages(url, page);
+        });
+
+        function fetchImages(url, page) {
+            $.ajax({
+                url: '/Home/FetchImages',
+                type: 'POST',
+                data: { url: url, page: page },
+                success: function (response) {
+                    if (response.images != null && response.images.length > 0) {
+                        $('#imageGallery').empty();
+                        $('#pagination').empty();
+                        $('#TotalWordCount').html(response.totalWordCount);
+                        $('#totalnoofimages').html(response.totalnoofimages);
+                        preparewordstable(response.topWords);
+                        prepareimages(response.disimages);
+                        // $('#imageGallery').html(response);
+                        generatePaginationLinks(page, response.totalnoofimages);
+                    }
+                    else
+                    {
+                        $('#imageGallery').html('<div class="alert alert-danger">' +response.error+'</div>');
+                    }                  
+                }
+            });
+        }
+
+        function preparewordstable(TopWords) {
+            var tbody = $('#wordTable tbody');
+            $('#wordTable tbody').empty();
+            $.each(TopWords, function (key, value) {
+                var row = $('<tr></tr>');
+                row.append($('<td></td>').text(key));
+                row.append($('<td></td>').text(value));
+                tbody.append(row);
+            });
+        }
+
+        function prepareimages(images){           
+            $.each(images, function (key, value) {
+                var img = $('<img>').attr('src', value.source).attr('alt', value.source).css({ width: '200px', height: '150px', margin: '5px' });
+                $('#imageGallery').append(img);
+            });
+        }
+
+        function generatePaginationLinks(currentPage, totalnoofimages) {
+            var pagination = $('#pagination');
+                var totimages = Math.ceil(totalnoofimages / 10);
+            pagination.empty();
+            for (var i = 1; i <= totimages; i++) {
+                var link = $('<a></a>').addClass('pagination-link').data('page', i).text(i);
+                if (i === currentPage) {
+                    link.addClass('active');
+                }
+                pagination.append(link);
+            }
+        }
+    });
+</script>
