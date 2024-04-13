@@ -10,7 +10,8 @@ namespace WebApplication1.Services
         private readonly ILogger<HomeController> _logger;
         private readonly IMemoryCache _memoryCache;
         private const int PageSize = 10; // Number of images per page      
-        public ImageService(ILogger<HomeController> logger, IMemoryCache memoryCache) {
+        public ImageService(ILogger<HomeController> logger, IMemoryCache memoryCache)
+        {
             _logger = logger;
             _memoryCache = memoryCache;
         }
@@ -100,7 +101,8 @@ namespace WebApplication1.Services
                         string imageUrl = imgNode.GetAttributeValue("src", null);
                         if (!string.IsNullOrEmpty(imageUrl))
                         {
-                            images.Add(new ImageModel { Source = imageUrl.StartsWith('/') ? url.TrimEnd('/') + imageUrl : imageUrl });
+                            string imgurl = !imageUrl.StartsWith("http") ? url.TrimEnd('/') +'/'+ imageUrl.TrimStart('/') : imageUrl;
+                            images.Add(new ImageModel { Source = imgurl });
                         }
                     }
                 }

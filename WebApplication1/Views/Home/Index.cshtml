@@ -19,6 +19,10 @@
         .pagination-link.active {
             font-weight: bold;
         }
+
+    table, th, td {
+        border: 1px solid black;
+    }
 </style>
 
 <div>
@@ -28,35 +32,37 @@
         <button type="submit">Fetch Images</button>
     </form>
 </div>
-<div class="row">
-    <div style="float:left; font-weight:bold;">Total number of images: </div> <div id="totalnoofimages"></div>
-</div>
-<div class="row" style="border:1px;">
-
-    <div id="imageGallery">
-        <!-- Images will be displayed here -->
-    </div>
-
-    <div id="pagination">
-        <!-- Pagination links will be displayed here -->
-    </div>
-</div>
-
-<div id="words">
-    <div class="row"> <div style="float:left; font-weight:bold;">Total number of Words:</div> <div id="TotalWordCount"></div></div>
+<div id="con">
     <div class="row">
-        <div style="float:left; font-weight:bold;">Top Words:</div>
-        <div>
-            <table id="wordTable" border="1">
-                <thead>
-                    <tr>
-                        <th>Word</th>
-                        <th>Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <div  style="float:left; font-weight:bold;">Total number of images: </div> <h2  id="totalnoofimages"></h2>
+    </div>
+    <div class="row" style="border:1px;">
+
+        <div id="imageGallery">
+            <!-- Images will be displayed here -->
+        </div>
+
+        <div id="pagination">
+            <!-- Pagination links will be displayed here -->
+        </div>
+    </div>
+
+    <div id="words">
+        <div class="row"> <div style="float:left; font-weight:bold;">Total number of Words:</div> <div id="TotalWordCount"></div></div>
+        <div class="row">
+            <div style="float:left; font-weight:bold;">Top Words:</div>
+            <div>
+                <table id="wordTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
