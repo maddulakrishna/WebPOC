@@ -11,14 +11,14 @@
     ViewBag.Title = "Home Page";
 }
 <style>
-    .pagination-link{
-        margin:2px;
-        cursor:pointer;
+    .pagination-link {
+        margin: 2px;
+        cursor: pointer;
     }
 
-    .pagination-link.active {
-        font-weight: bold;
-    }
+        .pagination-link.active {
+            font-weight: bold;
+        }
 </style>
 
 <div>
@@ -29,10 +29,10 @@
     </form>
 </div>
 <div class="row">
-   <div>Total number of images: </div> <div id="totalnoofimages"></div>
+    <div style="float:left; font-weight:bold;">Total number of images: </div> <div id="totalnoofimages"></div>
 </div>
 <div class="row" style="border:1px;">
-    
+
     <div id="imageGallery">
         <!-- Images will be displayed here -->
     </div>
@@ -82,27 +82,29 @@
                 type: 'POST',
                 data: { url: url, page: page },
                 success: function (response) {
+                    $('#imageGallery').empty();
+                    $('#pagination').empty();
                     if (response.images != null && response.images.length > 0) {
-                        $('#imageGallery').empty();
-                        $('#pagination').empty();
-                        $('#TotalWordCount').html(response.totalWordCount);
-                        $('#totalnoofimages').html(response.totalnoofimages);
-                        preparewordstable(response.topWords);
                         prepareimages(response.disimages);
                         // $('#imageGallery').html(response);
                         generatePaginationLinks(page, response.totalnoofimages);
                     }
-                    else
-                    {
-                        $('#imageGallery').html('<div class="alert alert-danger">' +response.error+'</div>');
-                    }                  
+                    else {
+                        $('#imageGallery').html('<div class="alert alert-danger">' + response.error + '</div>');
+                    }
+                    $('#wordTable tbody').empty();
+                    if (response.topWords != null) {
+                        $('#TotalWordCount').html(response.totalWordCount);
+                        $('#totalnoofimages').html(response.totalnoofimages);
+                        preparewordstable(response.topWords);
+                    }
                 }
             });
         }
 
         function preparewordstable(TopWords) {
             var tbody = $('#wordTable tbody');
-            $('#wordTable tbody').empty();
+           
             $.each(TopWords, function (key, value) {
                 var row = $('<tr></tr>');
                 row.append($('<td></td>').text(key));
@@ -111,7 +113,7 @@
             });
         }
 
-        function prepareimages(images){           
+        function prepareimages(images) {
             $.each(images, function (key, value) {
                 var img = $('<img>').attr('src', value.source).attr('alt', value.source).css({ width: '200px', height: '150px', margin: '5px' });
                 $('#imageGallery').append(img);
@@ -120,7 +122,7 @@
 
         function generatePaginationLinks(currentPage, totalnoofimages) {
             var pagination = $('#pagination');
-                var totimages = Math.ceil(totalnoofimages / 10);
+            var totimages = Math.ceil(totalnoofimages / 10);
             pagination.empty();
             for (var i = 1; i <= totimages; i++) {
                 var link = $('<a></a>').addClass('pagination-link').data('page', i).text(i);
